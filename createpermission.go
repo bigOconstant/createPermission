@@ -28,6 +28,8 @@ func main() {
 	conn, err := sql.Open("mssql", connString)
 	if err != nil {
 		log.Fatal("Open connection failed:", err.Error())
+
+		os.Exit(1)
 	} else {
 		fmt.Println("Connection Sucessfully")
 		fmt.Println("*********Generate Perimission Script***************")
@@ -65,7 +67,7 @@ func main() {
 		SecurityActivityMap[2] = "3000-3999 - reserved for patient related data"
 		SecurityActivityMap[3] = "5000-5999 reserved for API OAuth Application permissions"
 		SecurityActivityMap[4] = "6000-6999 reserved for media"
-		SecurityActivityMap[5] = "7000 - 7999 reserved for authorization mode"
+		SecurityActivityMap[5] = "7000-7999 reserved for authorization mode"
 
 		for i := 1; i < len(SecurityActivityMap)+1; i++ {
 			fmt.Println("ID: ", i, "Description:", SecurityActivityMap[i])
@@ -95,27 +97,13 @@ func main() {
 		fmt.Scan(&inputstring)
 
 		fmt.Println("\nName is: ", inputstring)
-		//var desctiptionnew = ""
 
-		//fmt.Println("Enter text: ")
-		// Create a single reader which can be called multiple times
 		reader := bufio.NewReader(os.Stdin)
-		// Prompt and read
-		//fmt.Print("Enter text: ")
 		desctiptionnew, _ := reader.ReadString('\n')
 		fmt.Print("Please Enter a description: ")
 		desctiptionnew, _ = reader.ReadString('\n')
-		// Trim whitespace and print
-		// fmt.Printf("Text1: \"%s\", Text2: \"%s\"\n",
-		//strings.TrimSpace(text), strings.TrimSpace(text2))
-
-		//desctiptionnew := ""
 
 		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew))
-
-		//list[securityRoleId].Name
-		//newval
-		//inputstring
 
 		fmt.Printf("Ending Application\n")
 
@@ -207,7 +195,11 @@ func getConnection(filename string) models.Connection {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		os.Exit(1)
+		fmt.Println("No connection file found")
+		CreateConnectionFile()
+		return getConnection(filename)
+
+		//os.Exit(1)
 	}
 
 	var c models.Connection
@@ -215,4 +207,40 @@ func getConnection(filename string) models.Connection {
 	json.Unmarshal(raw, &c)
 
 	return c
+}
+
+func CreateConnectionFile() {
+
+	conn := models.Connection{}
+	/****************/
+
+	//var inputstring = ""
+	fmt.Println("Hi, it looks like you don't have a connection file.\nLets go ahead and create one")
+	fmt.Println("Please enter the server address, if its your localhost make sure to enable tcp connections")
+	fmt.Print("Server: ")
+	fmt.Scan(&conn.Server)
+	fmt.Print("\nPlease Enter the DB User name \nUser: ")
+	fmt.Scan(&conn.User)
+	fmt.Println("\nPlease Enter the Database Name example, develop")
+	fmt.Print("Database: ")
+	fmt.Scan(&conn.Database)
+	fmt.Println("\nPlease Enter the Password for the database")
+	fmt.Print("Password: ")
+	fmt.Scan(&conn.Password)
+
+	JsonFile, _ := json.Marshal(conn)
+	ioutil.WriteFile("connection.json", JsonFile, 0644)
+	/****************/
+
+	/*file, err := os.Create("connection.json")
+	if err != nil {
+		log.Fatal("Something bad happened", err)
+	} else {
+		fmt.Println("Writting migration script to output.sql")
+	}
+	defer file.Close()
+
+	fmt.Fprintf(file, output)
+	*/
+
 }

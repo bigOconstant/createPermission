@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"../models"
+	"os"
 )
 
 func GetSecurityRoles(conn *sql.DB) map[int]models.Security {
@@ -13,6 +14,8 @@ func GetSecurityRoles(conn *sql.DB) map[int]models.Security {
 
 	if err != nil {
 		fmt.Println("failed:", err.Error())
+		fmt.Println("Check your connection.json file and that you have tcp connections enabled and try again")
+		os.Exit(1)
 		return map[int]models.Security{}
 	}
 	defer stmt.Close()
@@ -51,6 +54,9 @@ func GetSecurityActivityEnumMap(conn *sql.DB) map[int]models.SecurityActivityEnu
 
 	if err != nil {
 		fmt.Println("Failed:", err.Error())
+
+		fmt.Println("Check your connection.json file and that you have tcp connections enabled and try again")
+		os.Exit(1)
 		return map[int]models.SecurityActivityEnum{} //return empty array
 	}
 	defer stmt.Close()
