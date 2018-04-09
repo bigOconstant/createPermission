@@ -64,7 +64,7 @@ func main() {
 		var SecurityActivityMap map[int]string
 		SecurityActivityMap = make(map[int]string)
 		SecurityActivityMap[1] = "1000-1999 reserved for configuration/settings data"
-		SecurityActivityMap[2] = "3000-3999 - reserved for patient related data"
+		SecurityActivityMap[2] = "3000-3999 reserved for patient related data"
 		SecurityActivityMap[3] = "5000-5999 reserved for API OAuth Application permissions"
 		SecurityActivityMap[4] = "6000-6999 reserved for media"
 		SecurityActivityMap[5] = "7000-7999 reserved for authorization mode"
@@ -114,8 +114,6 @@ func main() {
 
 func CreateMigrateScript(SecurityRole string, id int, name string, description string) {
 
-	//connString := fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s", connObj.Server, connObj.User, connObj.Password, connObj.Database)
-
 	output := fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityEnum Where SecurityActivityId =  %d )\n    Begin\n", id)
 	output = output + fmt.Sprintf("        INSERT INTO SecurityActivityEnum(SecurityActivityId, Name, Description, FilterSecurityActivityId)\n")
 	output = output + fmt.Sprintf("        VALUES ( %d ,'%s', , '%s', 1038, )\n", id, name, description)
@@ -134,7 +132,6 @@ func CreateMigrateScript(SecurityRole string, id int, name string, description s
 	defer file.Close()
 
 	fmt.Fprintf(file, output)
-	//fmt.Println(output)
 
 }
 
@@ -182,14 +179,6 @@ func printList(inputL map[int]models.Security) {
 
 }
 
-func printOtherList(inputL map[int]models.SecurityActivityEnum) {
-	for i := 0; i < 1; i++ {
-		fmt.Println("SID: ", inputL[i].SecurityActivityId, " Name: ", inputL[i].Name, " Description: ", inputL[i].Description, " FilterSecurityActivityId: ", inputL[i].FilterSecurityActivityId)
-
-	}
-
-}
-
 func getConnection(filename string) models.Connection {
 	raw, err := ioutil.ReadFile(filename)
 
@@ -212,9 +201,7 @@ func getConnection(filename string) models.Connection {
 func CreateConnectionFile() {
 
 	conn := models.Connection{}
-	/****************/
 
-	//var inputstring = ""
 	fmt.Println("Hi, it looks like you don't have a connection file.\nLets go ahead and create one")
 	fmt.Println("Please enter the server address, if its your localhost make sure to enable tcp connections")
 	fmt.Print("Server: ")
@@ -230,17 +217,5 @@ func CreateConnectionFile() {
 
 	JsonFile, _ := json.Marshal(conn)
 	ioutil.WriteFile("connection.json", JsonFile, 0644)
-	/****************/
-
-	/*file, err := os.Create("connection.json")
-	if err != nil {
-		log.Fatal("Something bad happened", err)
-	} else {
-		fmt.Println("Writting migration script to output.sql")
-	}
-	defer file.Close()
-
-	fmt.Fprintf(file, output)
-	*/
 
 }
