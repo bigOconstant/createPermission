@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"./api"
 	"./models"
@@ -49,7 +51,7 @@ func main() {
 			if inputstring == "" {
 				fmt.Println("Could not find an id with that input try again")
 			} else {
-				fmt.Println("You chose :", list[securityRoleId].Name)
+				fmt.Println("You choose :", list[securityRoleId].Name)
 			}
 		}
 
@@ -85,16 +87,66 @@ func main() {
 			}
 		}
 
-		fmt.Println("Testing new function")
 		var newval = returnSecurityActivityNumber(inputid, list2)
-		fmt.Println("Valinserting: ", newval)
+		fmt.Println("Value inserting: ", newval)
 
-		fmt.Println("\n Please enter your new permission  name with no spaces")
+		fmt.Print("\nPlease enter your new permission  name with no spaces:")
+
+		fmt.Scan(&inputstring)
+
+		fmt.Println("\nName is: ", inputstring)
+		//var desctiptionnew = ""
+
+		//fmt.Println("Enter text: ")
+		// Create a single reader which can be called multiple times
+		reader := bufio.NewReader(os.Stdin)
+		// Prompt and read
+		//fmt.Print("Enter text: ")
+		desctiptionnew, _ := reader.ReadString('\n')
+		fmt.Print("Please Enter a description: ")
+		desctiptionnew, _ = reader.ReadString('\n')
+		// Trim whitespace and print
+		// fmt.Printf("Text1: \"%s\", Text2: \"%s\"\n",
+		//strings.TrimSpace(text), strings.TrimSpace(text2))
+
+		//desctiptionnew := ""
+
+		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew))
+
+		//list[securityRoleId].Name
+		//newval
+		//inputstring
 
 		fmt.Printf("Ending Application\n")
 
 	}
 	defer conn.Close()
+
+}
+
+func CreateMigrateScript(SecurityRole string, id int, name string, description string) {
+
+	//connString := fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s", connObj.Server, connObj.User, connObj.Password, connObj.Database)
+
+	output := fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityEnum Where SecurityActivityId =  %d )\n    Begin\n", id)
+	output = output + fmt.Sprintf("        INSERT INTO SecurityActivityEnum(SecurityActivityId, Name, Description, FilterSecurityActivityId)\n")
+	output = output + fmt.Sprintf("        VALUES ( %d ,'%s', , '%s', 1038, )\n", id, name, description)
+	output = output + fmt.Sprintf("    End\n")
+	output = output + fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityRoleRel WHERE SecurityActivityId = %d AND SecurityRoleId = (SELECT SecurityRoleId FROM SecurityRole WHERE Name = '%s'))\n", id, SecurityRole)
+	output = output + fmt.Sprintf("BEGIN\n")
+	output = output + fmt.Sprintf("    INSERT INTO SecurityActivityRoleREL VALUES (%d, ( SELECT SecurityRoleId FROM SecurityRole WHERE Name = '%s'))\n", id, SecurityRole)
+	output = output + fmt.Sprintf("END\n")
+
+	file, err := os.Create("output.sql")
+	if err != nil {
+		log.Fatal("Something bad happened", err)
+	} else {
+		fmt.Println("Writting migration script to output.sql")
+	}
+	defer file.Close()
+
+	fmt.Fprintf(file, output)
+	//fmt.Println(output)
 
 }
 

@@ -47,7 +47,6 @@ func GetSecurityRoles(conn *sql.DB) map[int]models.Security {
 }
 
 func GetSecurityActivityEnumMap(conn *sql.DB) map[int]models.SecurityActivityEnum {
-	fmt.Println("Starting map")
 	stmt, err := conn.Prepare("select SecurityActivityId,Name, Description, FilterSecurityActivityId from SecurityActivityEnum order by SecurityActivityId ")
 
 	if err != nil {
