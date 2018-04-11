@@ -59,7 +59,7 @@ func main() {
 
 		var list2 = api.GetSecurityActivityEnumMap(conn)
 
-		fmt.Println("Enter a id corresponding to a section this permession should go into. a number value from above please")
+		fmt.Println("Enter a id corresponding to a section this permession should go into. a number value from below please")
 
 		var SecurityActivityMap map[int]string
 		SecurityActivityMap = make(map[int]string)
@@ -92,6 +92,40 @@ func main() {
 		var newval = returnSecurityActivityNumber(inputid, list2)
 		fmt.Println("Value inserting: ", newval)
 
+		fmt.Println("Please choose a level of security below, low is fine in most cases")
+		var SecurityLevel map[int]string
+		SecurityLevel = make(map[int]string)
+		SecurityLevel[1] = "Low"
+		SecurityLevel[2] = "Medium - Vivify Support"
+		SecurityLevel[3] = "High - Only developers"
+
+		for i := 1; i < len(SecurityLevel)+1; i++ {
+			fmt.Println("ID: ", i, " Level: ", SecurityLevel[i])
+		}
+
+		var level int
+
+		var securityLevelChosen = 1034
+		inputstring = ""
+		for inputstring == "" {
+			fmt.Scan(&level)
+			inputstring = SecurityLevel[level]
+
+			if inputstring == "" {
+				fmt.Println("Could not find an id with that input try again")
+			} else {
+				fmt.Println("You chose :", SecurityLevel[level])
+				if level == 1 {
+					securityLevelChosen = 1034
+				} else if level == 2 {
+					securityLevelChosen = 1036
+				} else {
+					securityLevelChosen = 1038
+				}
+			}
+
+		}
+
 		fmt.Print("\nPlease enter your new permission  name with no spaces:")
 
 		fmt.Scan(&inputstring)
@@ -103,7 +137,22 @@ func main() {
 		fmt.Print("Please Enter a description: ")
 		desctiptionnew, _ = reader.ReadString('\n')
 
-		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew))
+		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
+
+		fmt.Println("********************Next Steps**********************")
+		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
+
+		fmt.Println("****************************************************")
+		fmt.Printf("(%d,'%s',N'%s',%d)\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
+		fmt.Println("****************************************************")
+		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
+		fmt.Println("****************************************************")
+		fmt.Printf("(%d,%d)\n", newval, securityRoleId)
+		fmt.Println("****************************************************")
+		fmt.Println("Add the following line to Vivify.Platform/Components/Security/SecurityActivityEnum.cs")
+		fmt.Println("****************************************************")
+		fmt.Printf("%s = %d\n", inputstring, newval)
+		fmt.Println("****************************************************")
 
 		fmt.Printf("Ending Application\n")
 
@@ -112,22 +161,24 @@ func main() {
 
 }
 
-func CreateMigrateScript(SecurityRole string, id int, name string, description string) {
+func CreateMigrateScript(SecurityRole string, id int, name string, description string, securityLevelChosen int) {
 
 	output := fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityEnum Where SecurityActivityId =  %d )\n    Begin\n", id)
 	output = output + fmt.Sprintf("        INSERT INTO SecurityActivityEnum(SecurityActivityId, Name, Description, FilterSecurityActivityId)\n")
-	output = output + fmt.Sprintf("        VALUES ( %d ,'%s', , '%s', 1038, )\n", id, name, description)
+	output = output + fmt.Sprintf("        VALUES ( %d ,'%s' ,'%s',%d  )\n", id, name, description, securityLevelChosen)
 	output = output + fmt.Sprintf("    End\n")
 	output = output + fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityRoleRel WHERE SecurityActivityId = %d AND SecurityRoleId = (SELECT SecurityRoleId FROM SecurityRole WHERE Name = '%s'))\n", id, SecurityRole)
 	output = output + fmt.Sprintf("BEGIN\n")
 	output = output + fmt.Sprintf("    INSERT INTO SecurityActivityRoleREL VALUES (%d, ( SELECT SecurityRoleId FROM SecurityRole WHERE Name = '%s'))\n", id, SecurityRole)
 	output = output + fmt.Sprintf("END\n")
 
-	file, err := os.Create("output.sql")
+	filename := fmt.Sprintf("IHCP-____Add%sPermission.sql", name)
+
+	file, err := os.Create(filename)
 	if err != nil {
 		log.Fatal("Something bad happened", err)
 	} else {
-		fmt.Println("Writting migration script to output.sql")
+		fmt.Println("Writting migration script to ", filename)
 	}
 	defer file.Close()
 
