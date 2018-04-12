@@ -23,7 +23,7 @@ func main() {
 
 	connString := fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s", connObj.Server, connObj.User, connObj.Password, connObj.Database)
 
-	fmt.Println(connString)
+	//	fmt.Println(connString)
 
 	conn, err := sql.Open("mssql", connString)
 	if err != nil {
@@ -139,20 +139,20 @@ func main() {
 
 		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
 
-		fmt.Println("********************Next Steps**********************")
+		fmt.Println("\n********************Next Steps**********************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
 
-		fmt.Println("****************************************************")
+		fmt.Println("\n****************************************************\n")
 		fmt.Printf("(%d,'%s',N'%s',%d)\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
-		fmt.Println("****************************************************")
+		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
-		fmt.Println("****************************************************")
+		fmt.Println("\n****************************************************\n")
 		fmt.Printf("(%d,%d)\n", newval, securityRoleId)
-		fmt.Println("****************************************************")
+		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Vivify.Platform/Components/Security/SecurityActivityEnum.cs")
-		fmt.Println("****************************************************")
+		fmt.Println("\n****************************************************\n")
 		fmt.Printf("%s = %d\n", inputstring, newval)
-		fmt.Println("****************************************************")
+		fmt.Println("\n****************************************************")
 
 		fmt.Printf("Ending Application\n")
 
