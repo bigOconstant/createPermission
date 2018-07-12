@@ -61,31 +61,34 @@ func main() {
 
 		fmt.Println("Enter a id corresponding to a section this permession should go into. a number value from below please")
 
-		var SecurityActivityMap map[int]string
-		SecurityActivityMap = make(map[int]string)
-		SecurityActivityMap[1] = "1000-1999 reserved for configuration/settings data"
-		SecurityActivityMap[2] = "3000-3999 reserved for patient related data"
-		SecurityActivityMap[3] = "5000-5999 reserved for API OAuth Application permissions"
-		SecurityActivityMap[4] = "6000-6999 reserved for media"
-		SecurityActivityMap[5] = "7000-7999 reserved for authorization mode"
+		SecurityActivityMap := map[int]*models.SecurityActivity{}
+		SecurityActivityMap[1] = &models.SecurityActivity{Description: "1000-1999 reserved for configuration/settings data", Label: "General"}
+		SecurityActivityMap[2] = &models.SecurityActivity{Description: "2000-2999 reserved Caregiver/user related data", Label: "Careteam"}
+		SecurityActivityMap[3] = &models.SecurityActivity{Description: "3000-3999 reserved for patient related data", Label: "Patient"}
+		SecurityActivityMap[4] = &models.SecurityActivity{Description: "4000-4999 reserved for report related data", Label: "Reports"}
+		SecurityActivityMap[5] = &models.SecurityActivity{Description: "5000-5999 reserved for API OAuth Application permissions", Label: "API OAuth"}
+		SecurityActivityMap[6] = &models.SecurityActivity{Description: "6000-6999 reserved for media", Label: "Media"}
+		SecurityActivityMap[7] = &models.SecurityActivity{Description: "7000-7999 reserved for authorization mode", Label: "Authorization"}
 
 		for i := 1; i < len(SecurityActivityMap)+1; i++ {
-			fmt.Println("ID: ", i, "Description:", SecurityActivityMap[i])
+			fmt.Println("ID: ", i, "Description:", SecurityActivityMap[i].Description)
 
 		}
 
 		inputstring = ""
 		var inputid int
+		var SecurityActivityMapId = 0
 		for inputstring == "" {
 			fmt.Scan(&inputid)
 			if err != nil {
 				fmt.Println("Problem here", nil)
 			}
-			inputstring = SecurityActivityMap[inputid]
+			inputstring = SecurityActivityMap[inputid].Description
+			SecurityActivityMapId = inputid
 			if inputstring == "" {
 				fmt.Println("Could not find an id with that input try again")
 			} else {
-				fmt.Println("You chose :", SecurityActivityMap[inputid])
+				fmt.Println("You chose :", SecurityActivityMap[inputid].Description)
 			}
 		}
 
@@ -137,13 +140,13 @@ func main() {
 		fmt.Print("Please Enter a description: ")
 		desctiptionnew, _ = reader.ReadString('\n')
 
-		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
+		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, *SecurityActivityMap[SecurityActivityMapId])
 
 		fmt.Println("\n********************Next Steps**********************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
 
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,'%s','General','%s',%d)\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
+		fmt.Printf("(%d,'%s','%s','%s',%d)\n", newval, inputstring, SecurityActivityMap[SecurityActivityMapId].Label, strings.TrimSpace(desctiptionnew), securityLevelChosen)
 		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
 		fmt.Println("\n****************************************************\n")
@@ -161,11 +164,11 @@ func main() {
 
 }
 
-func CreateMigrateScript(SecurityRole string, id int, name string, description string, securityLevelChosen int) {
+func CreateMigrateScript(SecurityRole string, id int, name string, description string, securityLevelChosen int, SecurityActivityMap models.SecurityActivity) {
 
 	output := fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityEnum Where SecurityActivityId =  %d )\n    Begin\n", id)
 	output = output + fmt.Sprintf("        INSERT INTO SecurityActivityEnum(SecurityActivityId, Name, Description, FilterSecurityActivityId,Group)\n")
-	output = output + fmt.Sprintf("        VALUES ( %d ,'%s' ,'%s',%d,'General'  )\n", id, name, description, securityLevelChosen)
+	output = output + fmt.Sprintf("        VALUES ( %d ,'%s' ,'%s',%d,'%s'  )\n", id, name, description, securityLevelChosen, SecurityActivityMap.Label)
 	output = output + fmt.Sprintf("    End\n")
 	output = output + fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityRoleRel WHERE SecurityActivityId = %d AND SecurityRoleId = (SELECT SecurityRoleId FROM SecurityRole WHERE Name = '%s'))\n", id, SecurityRole)
 	output = output + fmt.Sprintf("BEGIN\n")
@@ -194,12 +197,16 @@ func returnSecurityActivityNumber(section int, input map[int]models.SecurityActi
 	case 1:
 		counter = 1000
 	case 2:
-		counter = 3000
+		counter = 2000
 	case 3:
-		counter = 5000
+		counter = 3000
 	case 4:
-		counter = 6000
+		counter = 4000
 	case 5:
+		counter = 5000
+	case 6:
+		counter = 6000
+	case 7:
 		counter = 7000
 	default:
 		counter = 1000
