@@ -143,7 +143,7 @@ func main() {
 		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
 
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,'%s',N'%s',%d)\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
+		fmt.Printf("(%d,'%s','General','%s',%d)\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen)
 		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
 		fmt.Println("\n****************************************************\n")
@@ -164,8 +164,8 @@ func main() {
 func CreateMigrateScript(SecurityRole string, id int, name string, description string, securityLevelChosen int) {
 
 	output := fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityEnum Where SecurityActivityId =  %d )\n    Begin\n", id)
-	output = output + fmt.Sprintf("        INSERT INTO SecurityActivityEnum(SecurityActivityId, Name, Description, FilterSecurityActivityId)\n")
-	output = output + fmt.Sprintf("        VALUES ( %d ,'%s' ,'%s',%d  )\n", id, name, description, securityLevelChosen)
+	output = output + fmt.Sprintf("        INSERT INTO SecurityActivityEnum(SecurityActivityId, Name, Description, FilterSecurityActivityId,Group)\n")
+	output = output + fmt.Sprintf("        VALUES ( %d ,'%s' ,'%s',%d,'General'  )\n", id, name, description, securityLevelChosen)
 	output = output + fmt.Sprintf("    End\n")
 	output = output + fmt.Sprintf("IF NOT EXISTS (SELECT 1 FROM SecurityActivityRoleRel WHERE SecurityActivityId = %d AND SecurityRoleId = (SELECT SecurityRoleId FROM SecurityRole WHERE Name = '%s'))\n", id, SecurityRole)
 	output = output + fmt.Sprintf("BEGIN\n")
