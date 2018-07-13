@@ -146,7 +146,7 @@ func main() {
 		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
 
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,'%s','%s','%s',%d)\n", newval, inputstring, SecurityActivityMap[SecurityActivityMapId].Label, strings.TrimSpace(desctiptionnew), securityLevelChosen)
+		fmt.Printf("(%d,'%s','%s',%d,'%s')\n", newval, inputstring, SecurityActivityMap[SecurityActivityMapId].Label, securityLevelChosen, strings.TrimSpace(desctiptionnew))
 		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
 		fmt.Println("\n****************************************************\n")
