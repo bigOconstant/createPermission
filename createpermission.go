@@ -157,6 +157,9 @@ func main() {
 		fmt.Printf("%s = %d\n", inputstring, newval)
 		fmt.Println("\n****************************************************")
 
+		var exitinput = ""
+		fmt.Printf("Finished Executing enter anything and press enter to end application")
+		fmt.Scan(&exitinput)
 		fmt.Printf("Ending Application\n")
 
 	}
