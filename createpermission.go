@@ -140,7 +140,8 @@ func main() {
 		fmt.Print("Please Enter a description: ")
 		desctiptionnew, _ = reader.ReadString('\n')
 
-		CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, *SecurityActivityMap[SecurityActivityMapId])
+		//Not doing this anymore
+		//CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, *SecurityActivityMap[SecurityActivityMapId])
 
 		fmt.Println("\n********************Next Steps**********************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
@@ -156,9 +157,15 @@ func main() {
 		fmt.Println("\n****************************************************\n")
 		fmt.Printf("%s = %d\n", inputstring, newval)
 		fmt.Println("\n****************************************************")
+		fmt.Println("Add the following line to vivify-platform/Database/Migrations/Config/Permissions.sql")
+		fmt.Println("\n****************************************************\n")
+		fmt.Printf("(%d,@RoleId)\n\n", newval)
+		fmt.Println("Add the following line to Vivify.Platform/Components/Security/ActivityEnum.sql")
+		fmt.Println("\n****************************************************\n")
+		fmt.Printf("(%d,'%s','%s',%d,'%s')\n\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, SecurityActivityMap[SecurityActivityMapId].Label)
 
 		var exitinput = ""
-		fmt.Printf("Finished Executing enter anything and press enter to end application")
+		fmt.Printf("Finished Script type anything and press enter to end application")
 		fmt.Scan(&exitinput)
 		fmt.Printf("Ending Application\n")
 
