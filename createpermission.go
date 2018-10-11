@@ -92,8 +92,8 @@ func main() {
 			}
 		}
 
-		var newval = returnSecurityActivityNumber(inputid, list2)
-		fmt.Println("Value inserting: ", newval)
+		var SecurityActivityId = returnSecurityActivityNumber(inputid, list2)
+		fmt.Println("Value inserting: ", SecurityActivityId)
 
 		fmt.Println("Please choose a level of security below, low is fine in most cases")
 		var SecurityLevel map[int]string
@@ -141,28 +141,28 @@ func main() {
 		desctiptionnew, _ = reader.ReadString('\n')
 
 		//Not doing this anymore
-		//CreateMigrateScript(list[securityRoleId].Name, newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, *SecurityActivityMap[SecurityActivityMapId])
+		//CreateMigrateScript(list[securityRoleId].Name, SecurityActivityId, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, *SecurityActivityMap[SecurityActivityMapId])
 
 		fmt.Println("\n********************Next Steps**********************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivifyEnum.Data.sql")
 
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,'%s','%s',%d,'%s')\n", newval, inputstring, SecurityActivityMap[SecurityActivityMapId].Label, securityLevelChosen, strings.TrimSpace(desctiptionnew))
+		fmt.Printf("(%d,'%s','%s',%d,'%s')\n", SecurityActivityId, inputstring, SecurityActivityMap[SecurityActivityMapId].Label, securityLevelChosen, strings.TrimSpace(desctiptionnew))
 		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,%d)\n", newval, securityRoleId)
+		fmt.Printf("(%d,%d)\n", SecurityActivityId, securityRoleId)
 		fmt.Println("\n****************************************************\n")
 		fmt.Println("Add the following line to Vivify.Platform/Components/Security/SecurityActivityEnum.cs")
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("%s = %d\n", inputstring, newval)
+		fmt.Printf("%s = %d\n", inputstring, SecurityActivityId)
 		fmt.Println("\n****************************************************")
 		fmt.Println("Add the following line to vivify-platform/Database/Migrations/Config/Permissions.sql")
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,@RoleId)\n\n", newval)
+		fmt.Printf("(%d,@RoleId)\n\n", SecurityActivityId)
 		fmt.Println("Add the following line to Vivify.Platform/Database/Migrations/Config/ActivityEnum.sql")
 		fmt.Println("\n****************************************************\n")
-		fmt.Printf("(%d,'%s','%s',%d,'%s')\n\n", newval, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, SecurityActivityMap[SecurityActivityMapId].Label)
+		fmt.Printf("(%d,'%s','%s',%d,'%s')\n\n", SecurityActivityId, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, SecurityActivityMap[SecurityActivityMapId].Label)
 
 		var exitinput = ""
 		fmt.Printf("Finished Script type anything and press enter to end application\n")
