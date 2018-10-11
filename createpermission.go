@@ -153,7 +153,7 @@ func main() {
 		fmt.Println("\n****************************************************\n")
 		fmt.Printf("(%d,%d)\n", SecurityActivityId, securityRoleId)
 		fmt.Println("\n****************************************************\n")
-		fmt.Println("Add the following line to Vivify.Platform/Components/Security/SecurityActivityEnum.cs")
+		fmt.Println("Add the following line to vivify-platform/VivifyPlatform/Vivify.Common/Enums/SecurityActivityEnum.cs")
 		fmt.Println("\n****************************************************\n")
 		fmt.Printf("%s = %d\n", inputstring, SecurityActivityId)
 		fmt.Println("\n****************************************************")
