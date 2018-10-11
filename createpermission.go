@@ -163,6 +163,10 @@ func main() {
 		fmt.Println("Add the following line to Vivify.Platform/Database/Migrations/Config/ActivityEnum.sql")
 		fmt.Println("\n****************************************************\n")
 		fmt.Printf("(%d,'%s','%s',%d,'%s')\n\n", SecurityActivityId, inputstring, strings.TrimSpace(desctiptionnew), securityLevelChosen, SecurityActivityMap[SecurityActivityMapId].Label)
+		fmt.Println("\n****************************************************\n")
+		fmt.Println("Add the following line to the front end code in vh-web-caregiverportal/src/modules/permissions/permissions.service.js")
+		fmt.Println("\n****************************************************\n")
+		fmt.Printf("%s:%d,\n\n", inputstring, SecurityActivityId)
 
 		var exitinput = ""
 		fmt.Printf("Finished Script type anything and press enter to end application\n")
