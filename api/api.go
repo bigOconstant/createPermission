@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 
-	"../models"
 	"os"
+
+	"../models"
 )
 
 func GetSecurityRoles(conn *sql.DB) map[int]models.Security {
@@ -42,9 +43,11 @@ func GetSecurityRoles(conn *sql.DB) map[int]models.Security {
 			fmt.Println(err)
 			continue
 		}
+
 		listmap[val.Id] = val
 
 	}
+
 	return listmap
 
 }

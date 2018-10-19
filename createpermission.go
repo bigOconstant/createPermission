@@ -17,6 +17,11 @@ import (
 
 func main() {
 
+	CreatePermission()
+
+}
+
+func CreatePermission() {
 	fmt.Println("Connection To DB and Loading Data...")
 
 	connObj := getConnection("./connection.json")
@@ -149,7 +154,7 @@ func main() {
 		fmt.Println("\n****************************************************\n")
 		fmt.Printf("(%d,'%s','%s',%d,'%s')\n", SecurityActivityId, inputstring, SecurityActivityMap[SecurityActivityMapId].Label, securityLevelChosen, strings.TrimSpace(desctiptionnew))
 		fmt.Println("\n****************************************************\n")
-		fmt.Println("Add the following line to Database/Data/dbo.SeuciryActiityRoleREL.Data.sql")
+		fmt.Println("Add the following line to Database/Data/dbo.SecurityActivityRoleRoleREL.Data.sql")
 		fmt.Println("\n****************************************************\n")
 		fmt.Printf("(%d,%d)\n", SecurityActivityId, securityRoleId)
 		fmt.Println("\n****************************************************\n")
@@ -176,7 +181,6 @@ func main() {
 
 	}
 	defer conn.Close()
-
 }
 
 func CreateMigrateScript(SecurityRole string, id int, name string, description string, securityLevelChosen int, SecurityActivityMap models.SecurityActivity) {
@@ -244,9 +248,13 @@ func printList(inputL map[int]models.Security) {
 
 	for i := 1; i < len(inputL)+1; i++ {
 		if inputL[i].Id > 9 {
-			fmt.Println("Id:", inputL[i].Id, " Name:", inputL[i].Name)
+			if inputL[i].Id != 0 {
+				fmt.Println("Id:", inputL[i].Id, " Name:", inputL[i].Name)
+			}
 		} else {
-			fmt.Println("Id:", inputL[i].Id, "  Name:", inputL[i].Name)
+			if inputL[i].Id != 0 {
+				fmt.Println("Id:", inputL[i].Id, "  Name:", inputL[i].Name)
+			}
 		}
 	}
 
