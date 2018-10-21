@@ -8,9 +8,15 @@ type Configuration struct {
 	ConfigurationDataTypeId int
 	SecurityActivityId      int
 	ValidValues             string
+	Id                      int
 }
 
 type ConfigurationDataType_Enum struct {
 	ConfigurationDataTypeId int
 	Name                    string
+}
+
+type ConfigurationSection struct {
+	Name string
+	Id   int
 }
