@@ -30,7 +30,7 @@ func main() {
 		fmt.Println("\n\n     Permission       ( ͡° ͜ʖ ͡°)     Configuration     ")
 		fmt.Println("\n\n                       Script                        \n\n")
 		fmt.Println("Enter 1 to Create a Permission")
-		fmt.Println("Enter 2 to Create a Configuration  (Beta, Milage may vary)")
+		fmt.Println("Enter 2 to Create a Configuration  (Beta, Not finished)")
 		fmt.Println("Enter q to quit")
 		fmt.Scan(&PickPath)
 
@@ -191,7 +191,7 @@ func CreateConfiguration() {
 			ValueList = append(ValueList, validValues)
 			var enterAnotherValue = ""
 			fmt.Print("Would you like to Enter another Valid value? :")
-			for enterAnotherValue != "n" {
+			for strings.ToLower(enterAnotherValue) != "n" {
 				fmt.Scan(&enterAnotherValue)
 				fmt.Println("")
 				fmt.Print("Enter a Valid Value:")
